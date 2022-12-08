@@ -1,0 +1,142 @@
+<%- include ("partials/head.ejs") %>
+    <meta charset="utf-8" />
+
+    <!-- Add references to the Azure Maps Map control JavaScript and CSS files. -->
+    <link rel="stylesheet" href="https://atlas.microsoft.com/sdk/javascript/mapcontrol/2/atlas.min.css"
+        type="text/css" />
+    <script src="https://atlas.microsoft.com/sdk/javascript/mapcontrol/2/atlas.min.js"></script>
+
+    <!-- Add a reference to the Azure Maps Services Module JavaScript file. -->
+    <script src="https://atlas.microsoft.com/sdk/javascript/service/2/atlas-service.min.js"></script>
+
+    <script>
+        var lat, lon;
+        function getLocation() {
+            document.getElementById('loader').style.display = 'grid';
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(setCoords);
+            } else {
+                x.innerHTML = "Geolocation is not supported by this browser.";
+            }
+        }
+        function setCoords(position) {
+            lat = position.coords.latitude
+            lon = position.coords.longitude
+            GetMap()
+            document.getElementById('loader').style.display = 'none';
+        }
+        function GetMap() {
+            var map = new atlas.Map("myMap", {
+                view: 'Auto',
+                authOptions: {
+                    authType: 'subscriptionKey',
+                    subscriptionKey: 'RVQdOVMiTuJWTaGQECNg4z5JBtxzpc09x3G--lyl_6Y'
+                },
+
+            });
+            map.events.add('ready', function () {
+                datasource = new atlas.source.DataSource();
+                map.sources.add(datasource);
+                var resultLayer = new atlas.layer.SymbolLayer(datasource, null, {
+                    iconOptions: {
+                        image: 'pin-round-darkblue',
+                        anchor: 'center',
+                        allowOverlap: true
+                    },
+                    textOptions: {
+                        anchor: "top"
+                    }
+                });
+
+                map.layers.add(resultLayer);
+                var pipeline = atlas.service.MapsURL.newPipeline(new atlas.service.MapControlCredential(map));
+
+                var searchURL = new atlas.service.SearchURL(pipeline);
+                var query = 'hospital';
+                var radius = 10000;
+
+                searchURL.searchPOI(atlas.service.Aborter.timeout(10000), query, {
+                    limit: 20,
+                    lat: lat,
+                    lon: lon,
+                    radius: radius,
+                    view: 'Auto'
+                }).then((results) => {
+
+                    // Extract GeoJSON feature collection from the response and add it to the datasource
+                    var data = results.geojson.getFeatures();
+                    datasource.add(data);
+
+                    // set camera to bounds to show the results
+                    map.setCamera({
+                        bounds: data.bbox,
+                        zoom: 10,
+                        padding: 15
+                    });
+                });
+                popup = new atlas.Popup();
+                map.events.add('mouseover', resultLayer, showPopup);
+                function showPopup(e) {
+                    //Get the properties and coordinates of the first shape that the event occurred on.
+
+                    var p = e.shapes[0].getProperties();
+                    var position = e.shapes[0].getCoordinates();
+
+                    //Create HTML from properties of the selected result.
+                    var html = `
+      <div style="padding:5px">
+        <div><b>${p.poi.name}</b></div>
+        <div>${p.address.freeformAddress}</div>
+        <div>${position[1]}, ${position[0]}</div>
+        <p>${lat}, ${lon}</p>
+      </div>`;
+
+                    //Update the content and position of the popup.
+                    popup.setPopupOptions({
+                        content: html,
+                        position: position
+                    });
+
+                    //Open the popup.
+                    popup.open(map);
+                }
+            });
+        }
+    </script>
+
+    <style>
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+
+        #myMap {
+            width: 60%;
+            height: 60%;
+            margin: auto;
+        }
+        @keyframes load {
+            0%{
+                transform: rotateZ(0deg)
+            }
+            100% {
+                transform: rotateZ(360deg);
+            }
+        }
+    </style>
+    <h1>Hospitals within 10 kilometers</h1>
+    <button onclick="getLocation()">Set My Location</button>
+
+    <body onload="GetMap()">
+        <div id="myMap"></div>
+        <div id="loader" style="width: 100vw; height: 100vh; background-color: rgba(0,0,0,0.5); position: fixed; top: 0; z-index: 2; display: none; place-items: center;">
+            <div style="display: grid; place-items: center; color: white; font-weight: bold; font-size: 1.2em; font-family: sans-serif;">
+                <p style="margin: 20px;">pls give location perms uwu :3 </p>
+                <div id="loader-circle" style="height: 10vh; width: 10vh; border-radius: 50%; border: 3px rgba(0,0,0,0.1) solid; border-left-color: blue;animation: load 2s infinite linear;"></div>
+            </div>
+            </div>
+    </body>
+    <%- include ("partials/footer.ejs") %>

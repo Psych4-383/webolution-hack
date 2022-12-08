@@ -1,0 +1,57 @@
+<%- include ("partials/head.ejs") %>
+<%- include ("partials/navbar.ejs") %>
+<body>
+    <main>
+
+        <h1>Login</h1>
+        
+        <form action="/auth/login" method="post">
+            <label for="email">Enter Email</label>
+            <input name="email" type="email" placeholder="abcdef@example.com" required>
+            <label for="password">Enter Password</label>
+            <input name="password" type="password" placeholder="$jD!m(f&3b" required>
+        <button type="submit">Login</button>
+    </form>
+    
+</main>
+
+<style>
+    form {
+        display: flex;
+        flex-direction: column;
+        width: 30vw;
+    }
+
+    form input {
+        padding: 10px 20px;
+        border: none;
+        background-color: rgba(0,0,0,0.1);
+        border-radius: 10px;
+        margin: 10px 0px;
+    }
+
+    form button {
+        padding: 10px 20px;
+        border: none;
+        background-color: var(--accent);
+        color: white;
+        border-radius: 10px;
+        width: 50%;
+        margin: auto;
+        cursor: pointer;
+    }
+    
+    main {
+        width: 40vw;
+        margin: auto;
+        padding: 3vw;
+        border-radius: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: center;
+        box-shadow:  0 0 20px #bebebe;
+    }
+</style>
+</body>
+<%- include ("partials/footer.ejs") %>

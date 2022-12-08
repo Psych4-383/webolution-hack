@@ -1,0 +1,68 @@
+<%- include ("partials/head.ejs") %>
+<%- include ("partials/navbar.ejs") %>
+<body>
+    <main>
+
+        <h1>Register</h1>
+        
+        <form action="/auth/register" method="post">
+            <label for="name">Enter Username</label>
+            <input name="name" type="text" placeholder="abcdef" required>
+            <label for="email">Enter Email</label>
+            <input name="email" type="email" placeholder="abcdef@example.com" required>
+            <label for="password">Enter Password</label>
+            <input name="password" type="password" placeholder="$jD!m(f&3b" required>
+            <label for="password">Confirm Password</label>
+            <input name="confirmPassword" type="password" placeholder="$jD!m(f&3b" required>
+        <label for="accounttype">Choose Account Type</label>
+        <div class="accountinput">
+            <input type="radio" name="accounttype" value="user"> User
+        </div>
+        <div class="accountinput">
+            <input type="radio" name="accounttype" value="doctor"> Doctor
+        </div>
+        <button type="submit">Register</button>
+    </form>
+    
+</main>
+
+    <style>
+        form {
+            display: flex;
+            flex-direction: column;
+            width: 30vw;
+        }
+
+        form input {
+            padding: 10px 20px;
+            border: none;
+            background-color: rgba(0,0,0,0.1);
+            border-radius: 10px;
+            margin: 10px 0px;
+        }
+
+        form button {
+            padding: 10px 20px;
+            border: none;
+            background-color: var(--accent);
+            color: white;
+            border-radius: 10px;
+            width: 50%;
+            margin: auto;
+            cursor: pointer;
+        }
+        
+        main {
+            width: 50vw;
+            margin: auto;
+            padding: 3vw;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: start;
+            align-items: center;
+            box-shadow:  0 0 20px #bebebe;
+        }
+    </style>
+</body>
+<%- include ("partials/footer.ejs") %>
