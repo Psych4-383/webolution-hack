@@ -16,11 +16,20 @@
             </p>
 
             <% if (user.doctor) { %>
-                <input type="text" placeholder="Enter Place of Work" id="query">
-                <button onclick="searchMaps()">
-                    Add Work Location
-                </button>
+                <div style="margin: 1vw; display:flex; flex-direction: column;">
+                    <input type="text" placeholder="Enter Place of Work" id="query" style="margin: 1vw">
+                    <button onclick="searchMaps()">
+                        Add Work Location
+                    </button>
+                </div>
+                <div id="locationcontent">
+                </div>
                 <% } %>
+
+
+                    <form action="/auth/logout">
+                        <button>Logout</button>
+                    </form>
         </main>
 
 
@@ -57,23 +66,53 @@
                 margin: auto;
                 cursor: pointer;
             }
+
+            .locationtitle{
+                font-weight: bold;
+            }
+
+            .locationcoords{
+                color: grey;
+            }
         </style>
 
         <script>
             async function searchMaps() {
-                var query = document.getElementById('query').value
-                // fetch(`https://atlas.microsoft.com/search/poi/json?api-version=1.0&query=${query}`)
-                fetch(`https://atlas.microsoft.com/search/fuzzy/json?api-version=1.0&query=seattle&subscription-key=RVQdOVMiTuJWTaGQECNg4z5JBtxzpc09x3G--lyl_6Y`, {
+                var data;
+                var query = encodeURI(document.getElementById('query').value)
+                fetch(`https://atlas.microsoft.com/search/fuzzy/json?api-version=1.0&query=${query}&subscription-key=RVQdOVMiTuJWTaGQECNg4z5JBtxzpc09x3G--lyl_6Y`, {
                     method: 'GET',
                     headers: {
-                        'x-ms-client-id': '87d89713-6b93-4766-86e6-d04dc37d27f5' ,
-                    }
-                }).then(
-                    (response)=> {
+                        'Accept': 'application/json',
+                        'x-ms-client-id': '87d89713-6b93-4766-86e6-d04dc37d27f5',
+                    },
+                })
+                    .then(response => response.text())
+                    .then(text => {
+                        data = JSON.parse(text)
+                        console.log(data)
+                        var locationdata = '';
+                        var locdata = document.getElementById('locationcontent')
+                        for (result of data.results){
+                            locationdata+=result.poi.name + ', '
+                            locationdata+=result.address.streetName + ', '
+                            locationdata+=result.address.countrySubdivision + ', '
+                            locationdata+=result.address.country
+                            var locobj = document.createElement('div')
+                            var loctitle = document.createElement('div')
+                            var loclat = document.createElement('div')
+                            loctitle.innerHTML = locationdata;
+                            loctitle.className = 'locationtitle'
+                            loclat.className = 'locationcoords'
+                            locobj.className = 'locationobject'
+                            loclat.innerHTML = result.position.lon + ', ' + result.position.lat
+                            locobj.appendChild(loctitle)
+                            locobj.appendChild(loclat)
+                            locdata.appendChild(locobj)
+                            locationdata = ''
+                        }
+                    })
 
-                        console.log(response.json())
-                    }
-                )
             }
         </script>
 

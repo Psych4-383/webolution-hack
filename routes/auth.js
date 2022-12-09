@@ -6,7 +6,13 @@ const { uuid } = require('uuidv4'),
 
 router.post('/register', (req, res) => {
     let errors = [];
-    const { name, email, password, confirmPassword } = req.body;
+    const { name, email, password, confirmPassword, accounttype } = req.body;
+    var doctor;
+    if(accounttype==='doctor'){
+        doctor=true
+    } else {
+        doctor=false
+    }
     if (!name || !email || !password) {
         errors.push({ msg: "All fields are required" })
     };
@@ -23,8 +29,9 @@ router.post('/register', (req, res) => {
             }
             const userId = uuid();
             const newUser = new User({
-                name: name,
+                username: name,
                 email: email,
+                doctor: doctor,
                 password: password,
                 userId: userId,
             });
@@ -39,7 +46,7 @@ router.post('/register', (req, res) => {
                             else {
                                 req.logIn(user, (err) => {
                                     if (err) throw err;
-                                    res.redirect('/')
+                                    res.redirect('/auth/login')
                                 });
                             }
                         })(req, res);
@@ -52,7 +59,7 @@ router.post('/register', (req, res) => {
 })
 
 router.get('/login', (req, res) => {
-    res.render('login', { title: "Login" })
+    res.render('login', { title: "Login", user: req.user })
 })
 
 router.post('/login', async (req, res, next) => {

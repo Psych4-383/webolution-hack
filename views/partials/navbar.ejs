@@ -4,17 +4,32 @@
             <img src="/logo.svg" alt="" width="40px">
         </a>
     </div>
-    <ul>
-        <a href="/">
-            <li>Register</li>
-        </a>
-        <a href="/auth/login">
-            <li>Login</li>
-        </a>
-        <a href="/">
-            <li>About</li>
-        </a>
-    </ul>
+    <% if (!user) { %>
+        <ul>
+            <a href="/">
+                <li>Register</li>
+            </a>
+            <a href="/auth/login">
+                <li>Login</li>
+            </a>
+            <a href="/">
+                <li>About</li>
+            </a>
+        </ul>
+
+        <% } else { %>
+            <ul>
+                <a href="/dashboard/find-hospitals">
+                    <li>Find Hospitals</li>
+                </a>
+                <a href="/auth/login">
+                    <li>Login</li>
+                </a>
+                <a href="/">
+                    <li>About</li>
+                </a>
+            </ul>
+            <% } %>
 </nav>
 
 <style>
@@ -27,19 +42,19 @@
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        box-shadow:  0 0 20px #b0aeae;
+        box-shadow: 0 0 20px #b0aeae;
     }
-    
+
     nav ul {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        margin: 0;  
+        margin: 0;
         list-style-type: none;
     }
 
-    ul a{
+    ul a {
         color: white;
         text-decoration: none;
     }
