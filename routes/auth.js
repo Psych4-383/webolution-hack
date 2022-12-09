@@ -50,7 +50,6 @@ router.post('/register', (req, res) => {
                                 });
                             }
                         })(req, res);
-
                     }).catch((err) => console.log(err));
                 })
             );

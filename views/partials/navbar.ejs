@@ -3,6 +3,8 @@
         <a href="/">
             <img src="/logo.svg" alt="" width="40px">
         </a>
+        <h2>CMS</h2>
+        <h4 style="font-weight: 100;">Centralized Medical System</h4>
     </div>
     <% if (!user) { %>
         <ul>
@@ -22,12 +24,16 @@
                 <a href="/dashboard/find-hospitals">
                     <li>Find Hospitals</li>
                 </a>
-                <a href="/auth/login">
-                    <li>Login</li>
+                <a href="/dashboard/find-doctors">
+                    <li>Find Doctors</li>
+                </a>
+                <a href="/dashboard/home">
+                    <li>Dashboard</li>
                 </a>
                 <a href="/">
                     <li>About</li>
                 </a>
+                <li style="color: #ffffff99; font-size: 80%;">Logged in as <%= user.username %></li>
             </ul>
             <% } %>
 </nav>
@@ -62,4 +68,13 @@
     ul li {
         margin: 0 10px;
     }
+    .logo {
+        display: flex;
+        align-items: center;
+    }
+    .logo * {
+        margin: 0 5px;
+        color: white;
+    }
+    
 </style>

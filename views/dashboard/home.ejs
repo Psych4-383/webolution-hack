@@ -15,25 +15,80 @@
                 <%= user.doctor ? 'Doctor' : 'User' %>
             </p>
 
-            <% if (user.doctor) { %>
+            <% if (user.doctor && user.hospital==='' ) { %>
                 <div style="margin: 1vw; display:flex; flex-direction: column;">
                     <input type="text" placeholder="Enter Place of Work" id="query" style="margin: 1vw">
                     <button onclick="searchMaps()">
                         Add Work Location
                     </button>
                 </div>
-                <div id="locationcontent">
+                <div class="locationpopup">
+                    <div id="locationcontent">
+
+                    </div>
                 </div>
-                <% } %>
+                <% } else if (user.doctor) { %>
+                    <p>Work Location: <%= user.hospital %>
+                    </p>
+                    <% } %>
+
+                        <% if (!user.doctor) { %>
+                            <form action="/dashboard/find-doctors">
+                                <button>Find Doctors</button>
+                            </form>
+                            <% } %>
+
+                            <div class="patients-curr-new">
+
+                                <div class="currpatients">
+                                    <% if (user.patients.length!=0) { %>
+                                        <h3>Current Patients (<%= user.patients.length%>)</h3>
+                                        <% for( let i=0; i < user.patients.length; i++ ) { %>
+                                            <% for (patient of users){ if (patient.userId==user.patients[i]){ %>
+                                                <div class="patient">
+                                                    <img src="<%= patient.pfp %>" alt="" width="40px">
+                                                    <%= patient.username %>
+                                                    </div>
+                                                    <% }} %>
+                                                    <% } %>
+                                <% } %> 
+                                </div>
+                                <div class="patientreqs">
+
+                                    <% if (user.requests.length!=0) { %>
+                                        <h3>Patient Requests (<%= user.requests.length %>)</h3>
+                                    <% for( let i=0; i < user.requests.length; i++ ) { %>
+                                        <% for (patient of users){ if (patient.userId==user.requests[i]){ %>
+                                            <div class="patient">
+                                                <img src="<%= patient.pfp %>" alt="" width="40px">
+                                                <%= patient.username %>
+                                                    <button style="font-size: 80%; padding: 10px;"
+                                                        onclick="window.location.href=`/dashboard/accept?id=<%=patient.userId%>`">
+                                                        Accept Patient
+                                                    </button>
+                                                </div>
+                                                <% }} %>
+                                                <% } %>
+                                                <% } %>
+                                            </div>
+                                            
+                                        </div>
 
 
-                    <form action="/auth/logout">
-                        <button>Logout</button>
-                    </form>
-        </main>
+
+
+
+                                            <form action="/auth/logout">
+                                                <button>Logout</button>
+                                            </form>
+                                        </main>
 
 
         <style>
+            form {
+                margin: 1vw;
+            }
+
             main {
                 width: 50vw;
                 margin: auto;
@@ -46,7 +101,24 @@
                 box-shadow: 0 0 20px #bebebe;
             }
 
-            .profile-box {}
+            .patients-curr-new {
+                width: 100%;
+                display: grid;
+                grid-template-columns: 50% 50%;
+            }
+
+            .patient {
+                display: flex;
+                justify-content: start;
+                align-items: center;
+            }
+            .patient * {
+                margin: 10px;
+            }
+
+            .patient button {
+                margin-left: 50px;
+            }
 
             .pfp img {
                 width: 100px;
@@ -67,20 +139,30 @@
                 cursor: pointer;
             }
 
-            .locationtitle{
+            .locationtitle {
                 font-weight: bold;
+                margin-top: 10px;
             }
 
-            .locationcoords{
+            .locationcoords {
                 color: grey;
+            }
+
+            .nostylebutton {
+                background-color: transparent;
+                padding: 0;
+                border: none;
+                cursor: pointer;
             }
         </style>
 
         <script>
+            window.onload = () => {
+            }
             async function searchMaps() {
                 var data;
                 var query = encodeURI(document.getElementById('query').value)
-                fetch(`https://atlas.microsoft.com/search/fuzzy/json?api-version=1.0&query=${query}&subscription-key=RVQdOVMiTuJWTaGQECNg4z5JBtxzpc09x3G--lyl_6Y`, {
+                fetch(`https://atlas.microsoft.com/search/fuzzy/json?api-version=1.0&query=${query}&subscription-key=RVQdOVMiTuJWTaGQECNg4z5JBtxzpc09x3G--lyl_6Y&limit=50`, {
                     method: 'GET',
                     headers: {
                         'Accept': 'application/json',
@@ -93,23 +175,43 @@
                         console.log(data)
                         var locationdata = '';
                         var locdata = document.getElementById('locationcontent')
-                        for (result of data.results){
-                            locationdata+=result.poi.name + ', '
-                            locationdata+=result.address.streetName + ', '
-                            locationdata+=result.address.countrySubdivision + ', '
-                            locationdata+=result.address.country
-                            var locobj = document.createElement('div')
-                            var loctitle = document.createElement('div')
-                            var loclat = document.createElement('div')
-                            loctitle.innerHTML = locationdata;
-                            loctitle.className = 'locationtitle'
-                            loclat.className = 'locationcoords'
-                            locobj.className = 'locationobject'
-                            loclat.innerHTML = result.position.lon + ', ' + result.position.lat
-                            locobj.appendChild(loctitle)
-                            locobj.appendChild(loclat)
-                            locdata.appendChild(locobj)
-                            locationdata = ''
+                        locdata.innerHTML = ''
+                        for (result of data.results) {
+                            if (result.type === 'POI' && result.poi.categories.includes("hospital/polyclinic")) {
+                                console.log('hey??')
+                                locationdata += result.poi.name + ', '
+                                locationdata += result.address.streetName + ', '
+                                locationdata += result.address.countrySubdivision + ', '
+                                locationdata += result.address.country
+                                var locobj = document.createElement('div')
+                                var loctitle = document.createElement('div')
+                                var loctitlea = document.createElement('button')
+                                var loclat = document.createElement('div')
+                                loctitle.innerHTML = result.poi.name;
+                                loctitle.className = 'locationtitle'
+                                loclat.className = 'locationcoords'
+                                locobj.className = 'locationobject'
+                                loclat.innerHTML = locationdata + '<br>' + result.position.lat + ', ' + result.position.lon
+                                locobj.appendChild(loctitle)
+                                locobj.appendChild(loclat)
+                                locdata.appendChild(locobj)
+                                locationdata = ''
+                                locobj.style.cursor = 'pointer'
+                                locobj.onclick = function (e) {
+                                    var children = e.target.parentNode.childNodes
+                                    var locationname = encodeURI(children[0].innerText)
+                                    var coords = [];
+                                    children[1].innerHTML.split('<br>')[1].split(',').forEach(element => {
+                                        element = element.trim()
+                                        coords.push(element)
+                                    });
+                                    window.location.href = `/dashboard/editlocation?location=${locationname}&lat=${coords[0]}&lon=${coords[1]}&fullLoc=${encodeURI(children[1].innerHTML.split('<br>')[0])}`
+                                }
+                            }
+                        }
+                        locdata.style.display = 'block'
+                        if (locdata.innerHTML.trim() === '') {
+                            locdata.innerHTML = 'No such medical centers found'
                         }
                     })
 

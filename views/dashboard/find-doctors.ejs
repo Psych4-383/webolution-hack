@@ -1,0 +1,52 @@
+<%- include ("../partials/head.ejs") %>
+    <%- include ("../partials/navbar.ejs") %>
+    <div style="width: 70vw; margin: auto; text-align: center;">
+        <% if (hospital!=undefined) { %>
+            <h1>Doctors from <%= hospital %></h1>
+        <% } %>
+    </div>
+    <main> 
+            <% for( let i=0; i < doctors.length; i++ ) { %>
+                <div class="doctor">
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
+                    <img src="<%= doctors[i].pfp %>" alt="" width="50px">
+                    <p style="margin: 10px;"><%= doctors[i].username %></p>
+                </div>
+                <p style="margin: 10px; font-size: 90%; opacity: 0.7;"><%= doctors[i].hospital %></p>
+                <% if (doctors[i].doctorBio) { %>
+                    <p style="margin: 10px; font-size: 90%; opacity: 0.7;"><%= doctors[i].doctorBio %></p>
+                <% } %>
+                <button style="margin: 10px;" onclick="window.location.href = '/dashboard/request?id=<%= doctors[i].userId %>'">Send Request</button>
+            </div>
+            <% } %>
+            
+        </main>
+            
+            <style>
+                    button {
+                        padding: 10px 20px;
+                        border: none;
+                        background-color: var(--accent);
+                        color: white;
+                        border-radius: 10px;
+                        margin: auto;
+                        cursor: pointer;
+                    }
+                    .doctor {
+                        display: flex;
+                        flex-direction: column;
+                        width: fit-content;
+                        box-shadow: 0 0 20px #bebebe;
+                        padding: 20px;
+                        border-radius: 10px;
+                        margin: 1vw;
+                        max-width: 20vw;
+                    }
+                main {
+                    width: 70vw;
+                    margin: auto;
+                    display: flex;
+                }
+</style>
+
+                <%- include ("../partials/head.ejs") %>

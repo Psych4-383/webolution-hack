@@ -77,21 +77,14 @@
                     });
                     popup = new atlas.Popup();
                     map.events.add('mouseover', resultLayer, showPopup);
+                    map.events.add('click', resultLayer, handleClick)
                     function showPopup(e) {
                         //Get the properties and coordinates of the first shape that the event occurred on.
-
                         var p = e.shapes[0].getProperties();
                         var position = e.shapes[0].getCoordinates();
-
+                        
                         //Create HTML from properties of the selected result.
-                        var html = `
-      <div style="padding:5px">
-        <div><b>${p.poi.name}</b></div>
-        <div>${p.address.freeformAddress}</div>
-        <div>${position[1]}, ${position[0]}</div>
-        <p>${lat}, ${lon}</p>
-      </div>`;
-
+                        var html = `<div style="padding:5px"><div><b>${p.poi.name}</b></div><div>${p.address.freeformAddress}</div><div>${position[1]}, ${position[0]}</div><p>${lat}, ${lon}</p>* </div>`;
                         //Update the content and position of the popup.
                         popup.setPopupOptions({
                             content: html,
@@ -100,6 +93,13 @@
 
                         //Open the popup.
                         popup.open(map);
+                    }
+
+                    function handleClick(e){
+                        var p = e.shapes[0].getProperties();
+                        var position = e.shapes[0].getCoordinates();
+                        console.log(position[1], position[0])
+                        window.location.href=`/dashboard/find-doctors?lat=${position[1]}&lon=${position[0]}&hospital=${p.poi.name}`
                     }
                 });
             }
