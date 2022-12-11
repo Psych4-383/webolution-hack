@@ -1,0 +1,54 @@
+<%- include ("../partials/head.ejs") %>
+<%- include ("../partials/navbar.ejs") %>
+<main>
+    <h1>Prescription Details</h1>
+    <div class="prescription" style="width: 100%;">
+        <div style="width: 100%; display: flex; justify-content: space-between;">
+            <p><strong>Doctor/Assigned By: </strong><%= pres.doctorName %></p>
+            <p><strong>Patient/Assigned To:</strong> <%= pres.patientName %></p>
+        </div>
+        <p><strong>Hospital: </strong><%= pres.hospital %></p>
+        <div class="details" style="margin: 2vw;">
+            <p><strong>Drug/Medication Name:</strong> <%= pres.drug %></p>
+            <p><strong>Drug/Medication Dose: </strong><%= pres.dose || '---' %></p>
+            <p><strong>Dose per Day:</strong> <%= pres.perDay || '---' %></p>
+            <p><strong>Number of Days:</strong> <%= pres.days || '---' %></p>
+            <p><strong>Special Instructions: </strong><%= pres.specIns || '---' %></p>
+        </div>
+        <div style="display: flex; align-items: center;">
+            <button onclick="window.location.href = `/dashboard/print?id=<%= pres.presId %>`">View as PDF</button>
+        </div>
+    </div>
+</main>
+
+<style>
+    main {
+        width: 40vw;
+        margin: auto;
+        padding: 3vw;
+        border-radius: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: center;
+        box-shadow:  0 0 20px #bebebe;
+    }
+    button {
+        padding: 10px 20px;
+        border: none;
+        background-color: var(--accent);
+        color: white;
+        border-radius: 10px;
+        margin: auto;
+        cursor: pointer;
+    }
+
+    .details * {
+        margin: 10px 0;
+    }
+
+    .prescription{
+        margin-top: 2vw;
+    }
+</style>
+<%- include ("../partials/footer.ejs") %>

@@ -1,0 +1,73 @@
+<%- include ("../partials/head.ejs") %>
+<%- include ("../partials/navbar.ejs") %>
+<main>
+    <form action="/dashboard/new-prescription" method="post">
+        <input type="text" name="patient_id" value="<%= patient.userId %>" readonly required hidden>
+        <label for="patient_name" class="required">Patient Name</label>
+        <input type="text" name="patient_name" value="<%= patient.username %>" readonly required>
+        <input type="text" name="doctor_id" value="<%=user.userId %>" readonly required hidden>
+        <label for="doctor_name" class="required">Doctor Name</label>
+        <input type="text" name="doctor_name" value="<%=user.username %>" readonly required>
+        <% if (user.hospital) { %>
+            <label for="hospital" class="required">Hospital</label>
+            <input type="text" name="hospital" value="<%=user.hospital %>" readonly required>
+        <% } %>
+        <label for="drug" class="required">Drug/Medication Name</label>
+        <input type="text" name="drug" required>
+        <label for="dose">Drug/Medication Amount per Dose</label>
+        <input type="text" name="dose">
+        <label for="per_day">Drug/Medication Dose per Day</label>
+        <input type="Number" name="per_day" value="1">
+        <label for="days">Number of Days</label>
+        <input type="Number" name="days" value="1">
+        <label for="spec_ins">Special Instructions</label>
+        <textarea name="spec_ins" cols="30" rows="5"></textarea>
+            <button type="submit">Add Prescription</button>
+    </form>
+</main>
+
+<style>
+    form {
+        display: flex;
+        flex-direction: column;
+        width: 30vw;
+    }
+
+    form input, form textarea {
+        padding: 10px 20px;
+        border: none;
+        background-color: rgba(0,0,0,0.1);
+        border-radius: 10px;
+        margin: 10px 0px;
+    }
+
+    .required:after{
+        content: '*';
+        color: red;
+    }
+
+    form button {
+        padding: 10px 20px;
+        border: none;
+        background-color: var(--accent);
+        color: white;
+        border-radius: 10px;
+        width: 50%;
+        margin: auto;
+        cursor: pointer;
+    }
+    
+    main {
+        width: 40vw;
+        margin: auto;
+        padding: 3vw;
+        border-radius: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: center;
+        box-shadow:  0 0 20px #bebebe;
+    }
+</style>
+
+<%- include ("../partials/footer.ejs") %>

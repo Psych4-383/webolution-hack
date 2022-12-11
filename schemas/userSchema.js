@@ -17,10 +17,11 @@ const userSchema = new mongoose.Schema({
     hospitalLat: defBlank,
     hospitalLon: defBlank,
     patients: Array,
-    consultationFee: Number,
+    // consultationFee: Number,
     doctorBio: String,
     requests: Array,
     doctors: Array,
+    assignedPrescriptions: Array
 })
 userSchema.plugin(passportLocalMongoose)
 

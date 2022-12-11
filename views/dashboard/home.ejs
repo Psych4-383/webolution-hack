@@ -48,6 +48,10 @@
                                                 <div class="patient">
                                                     <img src="<%= patient.pfp %>" alt="" width="40px">
                                                     <%= patient.username %>
+                                                    <button style="font-size: 80%; padding: 10px;"
+                                                        onclick="window.location.href=`/dashboard/new-prescription?id=<%=patient.userId%>`">
+                                                        Add Prescription
+                                                    </button>
                                                     </div>
                                                     <% }} %>
                                                     <% } %>
@@ -72,19 +76,71 @@
                                                 <% } %>
                                             </div>
                                             
+                            </div>
+
+                            <% if (prescriptions.length!=0) { %>
+                             
+                                <div class="prescriptions">
+                                    <% if (user.doctor) { %>
+                                        <h3>Assigned Prescriptions (<%=prescriptions.length%>)</h3>
+                                        <% prescriptions.forEach(presc => { %>
+                                            <div class="presc">
+                                                <div>
+                                                <p style="font-weight: bold;">Assigned To: <%= presc[0] %></p>
+                                                <p>Drug: <%= presc[1] %></p>
+                                            </div>
+                                            <button onclick="window.location.href = `/dashboard/view-prescription?id=<%= presc[2]%>`">View</button>
                                         </div>
-
-
-
-
-
-                                            <form action="/auth/logout">
+                                        <% }); %>  
+                                        <% } %>
+                                <% if (!user.doctor) { %>
+                                    <h3>Your Prescriptions (<%=prescriptions.length%>)</h3>
+                                    <% prescriptions.forEach(presc => { %>
+                                        <div class="presc">
+                                            <div>
+                                                <p style="font-weight: bold;">Assigned By: <%= presc[0] %></p>
+                                                <p>Drug: <%= presc[1] %></p>
+                                            </div>
+                                            <button onclick="window.location.href = `/dashboard/view-prescription?id=<%= presc[2]%>`">View</button>
+                                        </div>
+                                    <% }); %>  
+                                <% } %>
+                            </div>
+                            <% } %>
+                            
+                            
+                            <form action="/auth/logout">
                                                 <button>Logout</button>
                                             </form>
                                         </main>
 
 
         <style>
+            .prescriptions {
+                width: 70%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin: 2vw auto;
+            }
+
+            .prescriptions h3{
+                text-align: center;
+            }
+
+            .presc {
+                width: 100%;
+                display: flex;
+                border-bottom: 2px solid #bebebe;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .presc * {
+                margin: 10px;
+            }
+            .presc button {
+                margin-left: 40px;
+            }
             form {
                 margin: 1vw;
             }

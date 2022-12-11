@@ -6,7 +6,6 @@ const passport = require('passport');
 const mongoose = require('mongoose');
 const bodyparser = require('body-parser');
 const passportInit = require('./middleware/passport.js')
-const ejs = require('ejs');
 passportInit(passport)
 
 app.use(express.static('public'))
